@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Beauty Brand Budget Tracker</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: #fff2f8;
+      margin: 0;
+      padding: 0;
+    }
+    header {
+      background: linear-gradient(90deg, #ff4dad, #ff92d0);
+      padding: 20px;
+      color: white;
+      text-align: center;
+      font-weight: bold;
+      font-size: 24px;
+    }
+    .container, .bottom-container {
+      display: flex;
+      flex-wrap: wrap;
+      padding: 20px;
+      gap: 20px;
+    }
+    .card {
+      background: white;
+      padding: 20px;
+      border-radius: 16px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      flex: 1;
+      min-width: 200px;
+      text-align: center;
+      position: relative;
+    }
+    .emoji-icon {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      font-size: 24px;
+    }
+    .editable {
+      color: #ff4dad;
+      cursor: pointer;
+      font-size: 14px;
+    }
+    .form-section {
+      flex: 1;
+      min-width: 300px;
+      background: white;
+      padding: 20px;
+      border-radius: 16px;
+    }
+    input, select, textarea {
+      width: 100%;
+      padding: 10px;
+      margin: 10px 0;
+      border-radius: 8px;
+      border: 1px solid #ddd;
+      font-family: 'Poppins', sans-serif;
+    }
+    button {
+      background-color: #ff4dad;
+      color: white;
+      padding: 10px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 600;
+    }
+    .expense-list {
+      background: white;
+      border-radius: 16px;
+      padding: 20px;
+      flex: 2;
+      min-width: 300px;
+    }
+    .expense-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 0;
+      border-bottom: 1px solid #eee;
+    }
+    .badge {
+      background: #ff4dad;
+      color: white;
+      padding: 4px 8px;
+      border-radius: 8px;
+      font-size: 12px;
+      margin-right: 10px;
+    }
+    .topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 20px;
+    }
+    .reset {
+      background: white;
+      border: 1px solid #ff4dad;
+      color: #ff4dad;
+      font-weight: 600;
+    }
+    .footer {
+      text-align: center;
+      background: #151522;
+      color: white;
+      padding: 20px;
+      font-size: 14px;
+    }
+    .delete-icon {
+      cursor: pointer;
+      color: #aaa;
+      margin-left: 10px;
+    }
+    .category-breakdown {
+      background: white;
+      border-radius: 16px;
+      margin: 0 20px 20px;
+      padding: 20px;
+      display: flex;
+      justify-content: space-between;
+      gap: 20px;
+    }
+    .category-bar {
+      height: 10px;
+      background: #ff4dad;
+      border-radius: 10px;
+      margin-top: 6px;
+    }
+    .tip-list ul {
+      padding-left: 20px;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    ✨ Beauty Brand Budget Tracker
+    <div style="font-size: 14px; font-weight: normal;">Track your startup costs and manage your beauty business finances</div>
+  </header>
+  <div class="topbar">
+    <div></div>
+    <button class="reset" onclick="resetData()">Reset Data</button>
+  </div>
+  <div class="container">
+    <div class="card">
+      <div class="emoji-icon">💰</div>
+      <h2>Total Budget</h2>
+      <div id="totalBudget">$10,000</div>
+      <div class="editable" onclick="editBudget()">Adjust Budget</div>
+    </div>
+    <div class="card">
+      <div class="emoji-icon">💸</div>
+      <h2>Total Spent</h2>
+      <div id="totalSpent">$0.00</div>
+    </div>
+    <div class="card">
+      <div class="emoji-icon">🏦</div>
+      <h2>Remaining</h2>
+      <div id="remaining">$10,000</div>
+    </div>
+    <div class="card">
+      <div class="emoji-icon">📈</div>
+      <h2>Top Category</h2>
+      <div id="topCategory">-</div>
+    </div>
+  </div>
+  <div class="container">
+    <div class="form-section">
+      <h3>Add New Expense</h3>
+      <input type="text" id="expenseName" placeholder="e.g., Product Packaging" />
+      <input type="number" id="amount" placeholder="Amount ($)" />
+      <select id="category">
+        <option value="">Select category</option>
+        <option value="Product Development">Product Development</option>
+        <option value="Packaging">Packaging</option>
+        <option value="Branding">Branding</option>
+        <option value="Marketing">Marketing</option>
+        <option value="Website">Website</option>
+        <option value="Legal & Compliance">Legal & Compliance</option>
+        <option value="Inventory">Inventory</option>
+        <option value="Equipment">Equipment</option>
+        <option value="Shipping">Shipping</option>
+        <option value="Other">Other</option>
+      </select>
+      <input type="date" id="date" />
+      <textarea id="notes" placeholder="Add any additional details..."></textarea>
+      <button onclick="addExpense()">Add Expense</button>
+    </div>
+    <div class="expense-list">
+      <h3>Recent Expenses</h3>
+      <div id="expenseItems"></div>
+    </div>
+  </div>
+  <div class="category-breakdown">
+    <div style="flex: 1;">
+      <h3>Category Breakdown</h3>
+      <div id="categoryBreakdown"></div>
+    </div>
+    <div class="tip-list" style="flex: 1;">
+      <h3>Beauty Brand Budget Tips</h3>
+      <ul>
+        <li>Allocate 20–30% of your budget to product development and testing</li>
+        <li>Don’t underestimate packaging costs – they can be 10–15% of your budget</li>
+        <li>Set aside at least 25% for marketing and branding</li>
+        <li>Consider legal costs for trademarks and compliance</li>
+        <li>Build in a 10% buffer for unexpected expenses</li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer">
+    Beauty Brand Budget Tracker | Made with ❤️ for beauty entrepreneurs<br />
+    Data is stored locally in your browser
+  </div>
+
+  <script>
+    let budget = parseFloat(localStorage.getItem('budget')) || 10000;
+    let expenses = JSON.parse(localStorage.getItem('expenses')) || [];
+
+    function render() {
+      let totalSpent = expenses.reduce((sum, e) => sum + parseFloat(e.amount), 0);
+      let remaining = budget - totalSpent;
+      let categories = {};
+      expenses.forEach(e => {
+        categories[e.category] = (categories[e.category] || 0) + parseFloat(e.amount);
+      });
+
+      let topCategory = Object.keys(categories).reduce((a, b) => categories[a] > categories[b] ? a : b, '-') || '-';
+      document.getElementById('totalBudget').innerText = `$${budget.toFixed(2)}`;
+      document.getElementById('totalSpent').innerText = `$${totalSpent.toFixed(2)}`;
+      document.getElementById('remaining').innerText = `$${remaining.toFixed(2)}`;
+      document.getElementById('topCategory').innerText = `${topCategory} - $${(categories[topCategory] || 0).toFixed(2)}`;
+
+      const container = document.getElementById('expenseItems');
+      container.innerHTML = '';
+      expenses.forEach((e, i) => {
+        const div = document.createElement('div');
+        div.className = 'expense-item';
+        div.innerHTML = `<div><span class="badge">${e.category}</span>${e.name}</div>
+          <div>$${parseFloat(e.amount).toFixed(2)} <span class="delete-icon" data-index="${i}">🗑️</span></div>`;
+        container.appendChild(div);
+      });
+      document.querySelectorAll('.delete-icon').forEach(icon => {
+        icon.onclick = function () {
+          const index = parseInt(this.getAttribute('data-index'));
+          deleteExpense(index);
+        };
+      });
+
+      const breakdownContainer = document.getElementById('categoryBreakdown');
+      breakdownContainer.innerHTML = '';
+      Object.entries(categories).forEach(([cat, value]) => {
+        const percentage = totalSpent ? (value / totalSpent * 100).toFixed(1) : 0;
+        breakdownContainer.innerHTML += `
+          <div style="margin-bottom: 10px;">
+            <strong>${cat}</strong> - $${value.toFixed(2)} (${percentage}%)
+            <div class="category-bar" style="width: ${percentage}%;"></div>
+          </div>`;
+      });
+    }
+
+    function addExpense() {
+      const name = document.getElementById('expenseName').value;
+      const amount = document.getElementById('amount').value;
+      const category = document.getElementById('category').value;
+      const date = document.getElementById('date').value;
+      const notes = document.getElementById('notes').value;
+
+      if (!name || !amount || !category || !date) return alert('Please fill out all required fields');
+
+      expenses.unshift({ name, amount, category, date, notes });
+      localStorage.setItem('expenses', JSON.stringify(expenses));
+      render();
+    }
+
+    function deleteExpense(index) {
+      if (confirm('Delete this expense?')) {
+        expenses.splice(index, 1);
+        localStorage.setItem('expenses', JSON.stringify(expenses));
+        render();
+      }
+    }
+
+    function editBudget() {
+      const newBudget = prompt('Enter new budget amount:', budget);
+      if (newBudget !== null && !isNaN(newBudget)) {
+        budget = parseFloat(newBudget);
+        localStorage.setItem('budget', budget);
+        render();
+      }
+    }
+
+    function resetData() {
+      localStorage.removeItem('expenses');
+      localStorage.removeItem('budget');
+      expenses = [];
+      budget = 10000;
+      render();
+    }
+
+    render();
+  </script>
+</body>
+</html>
